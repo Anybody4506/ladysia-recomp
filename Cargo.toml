@@ -1,10 +1,10 @@
 [package]
-name = "ladysia-decomp"
+name = "ladysia-recomp"
 version = "0.1.0"
 edition = "2024"
 
 [features]
-# Version finale : données sans code machine intégrées à l'exécutable. D'abord `ladysia-decomp <rom.gba> donnees <fichier>`, puis LADYSIA_DONNEES=<fichier> cargo build --release --features embarque
+# Version finale : données sans code machine intégrées à l'exécutable. D'abord `ladysia-recomp <rom.gba> donnees <fichier>`, puis LADYSIA_DONNEES=<fichier> cargo build --release --features embarque
 embarque = []
 
 [dependencies]

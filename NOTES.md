@@ -46,7 +46,7 @@ u8   méthode : bits 0-3 = m (0 = brut, 1..4 = RLE), bits hauts = motif du marqu
 ```
 
 Masques lus en ROM à `0x0800023C`. Réécrit dans `src/rle.rs` (tests inclus).
-`ladysia-decomp <rom> extract` sort 2 723 flux (1,5 Mo -> 2,8 Mo) dans `extract/rle/`
+`ladysia-recomp <rom> extract` sort 2 723 flux (1,5 Mo -> 2,8 Mo) dans `extract/rle/`
 en `.bin` + `.png` (tuiles 4 bpp, palette grise provisoire). Vérification : 99 % des
 fichiers ont une cohérence entre pixels voisins > 30 % (médiane 74 %, aléatoire = 6 %).
 11 fichiers sous 15 % : probablement des faux positifs du balayage.
@@ -162,7 +162,7 @@ Rendu par **émulation du vrai pilote** (`src/music.rs`) :
   horodatées dans `0x04000060`–`0x0400009F`, synthétisées par `src/psg.rs` et mélangées
   selon `SOUNDCNT_L/H`.
 
-`ladysia-decomp <rom> music` -> `extract/musique/musique_NN.wav` (16 bits, 22 795 Hz ;
+`ladysia-recomp <rom> music` -> `extract/musique/musique_NN.wav` (16 bits, 22 795 Hz ;
 un passage + jusqu'à 20 s de reprise avec fondu). Vérifié : pas de saturation, tempo et
 notes visibles au spectrogramme. Pas encore écouté sur une vraie console pour comparer ;
 la synthèse PSG est une approximation (pas de balayage de fréquence du canal 1).
@@ -250,7 +250,7 @@ Lu à la main dans le code, pour les comportements les plus fréquents (138 obje
 
 ## Visionneuse de niveaux (étape 14, `src/viewer.rs`, commande `view`)
 
-- Lancement : `visionneuse/Visionneuse Lady Sia.bat` (ou `ladysia-decomp <rom> view`).
+- Lancement : `visionneuse/Visionneuse Lady Sia.bat` (ou `ladysia-recomp <rom> view`).
 - Fenêtre Win32 sans dépendance (user32/gdi32), 240×160 agrandi ×3, ~60 images/s.
 - Scènes prises dans la table des niveaux `0x08351868` (60 états, scène + n° de musique) et
   chargées par `levels::SceneView::load` avec le décodeur natif (pas d'émulation, ~1 s) :
@@ -514,7 +514,7 @@ Tout le code du jeu est maintenant compilé en code machine PC : plus aucune ins
 jeu n'est interprétée en partie (0 sur 3 000 images depuis la sauvegarde 1 ou la course ;
 1 seule sur le test titre / menus : le saut de démarrage de la cartouche).
 
-- **Génération** : `ladysia-decomp <rom> recomp` lit `asm/ladysia.s` et écrit
+- **Génération** : `ladysia-recomp <rom> recomp` lit `asm/ladysia.s` et écrit
   `src/recomp/code/` (16 fichiers, ~6 Mo) : 90 346 instructions Thumb et 206 ARM en
   11 331 blocs. Un bloc = suite d'instructions coupée aux étiquettes, après les sauts,
   appels, retours et SWI. Chaque instruction devient `c.thumb_insn(b, opcode, adresse)`
@@ -611,8 +611,8 @@ L'exécutable du jeu (`--features embarque`) n'embarque plus la ROM mais un fich
 **données sans code machine**, écrit par la commande `donnees` :
 
 ```
-ladysia-decomp <rom.gba> recomp                 # régénère src/recomp/code/
-ladysia-decomp <rom.gba> donnees ladysia.lsd    # données : ROM sans instructions ni en-tête, compressée
+ladysia-recomp <rom.gba> recomp                 # régénère src/recomp/code/
+ladysia-recomp <rom.gba> donnees ladysia.lsd    # données : ROM sans instructions ni en-tête, compressée
 LADYSIA_DONNEES=ladysia.lsd cargo build --release --features embarque
 ```
 

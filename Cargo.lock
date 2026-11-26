@@ -3,5 +3,5 @@
 version = 4
 
 [[package]]
-name = "ladysia-decomp"
+name = "ladysia-recomp"
 version = "0.1.0"

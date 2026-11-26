@@ -24,14 +24,14 @@ Deze eerste build levert het gereedschap (de gehercompileerde code bestaat nog n
 `build.rs` schrijft er een lege module voor in de plaats).
 
 ```
-target/release/ladysia-decomp <rom.gba>
+target/release/ladysia-recomp <rom.gba>
 ```
 
 Analyseert de ROM en schrijft de geannoteerde disassembly naar `asm/ladysia.s` (plus
 enkele rapporten). De functienamen komen uit `symbols.txt`.
 
 ```
-target/release/ladysia-decomp <rom.gba> recomp
+target/release/ladysia-recomp <rom.gba> recomp
 ```
 
 Vertaalt de disassembly naar Rust in `src/recomp/code/`. Het commando mislukt als een
@@ -39,7 +39,7 @@ sprongdoel in de vertaalde code zelf niet vertaald is.
 
 ```
 cargo build --release
-target/release/ladysia-decomp <rom.gba> donnees ladysia.lsd
+target/release/ladysia-recomp <rom.gba> donnees ladysia.lsd
 ```
 
 Bouwt opnieuw met de spelcode en schrijft daarna de spelgegevens: de ROM waarin alle
@@ -49,11 +49,11 @@ instructies en de header zijn gewist, gecomprimeerd.
 LADYSIA_DONNEES=ladysia.lsd cargo build --release --features embarque
 ```
 
-Levert het uiteindelijke bestand `target/release/ladysia-decomp.exe` (hernoem het naar
+Levert het uiteindelijke bestand `target/release/ladysia-recomp.exe` (hernoem het naar
 wens), met de Rust-code en de gegevens. Opslagbestanden en instellingen komen ernaast.
 
-Tijdens het ontwikkelen start `ladysia-decomp <rom.gba> play` het spel vanaf de ROM, en
-opent `ladysia-decomp <rom.gba> view` de levelviewer.
+Tijdens het ontwikkelen start `ladysia-recomp <rom.gba> play` het spel vanaf de ROM, en
+opent `ladysia-recomp <rom.gba> view` de levelviewer.
 
 ## Spelen
 

@@ -283,7 +283,7 @@ pub fn run(rom: &[u8], listing: &str, out_dir: &str) -> Result<String, String> {
     let (mut n_arm, mut n_thumb) = (0, 0);
     for (f, chunk) in blocks.chunks(per).enumerate() {
         let mut s = String::from(
-            "// Code généré par `ladysia-decomp <rom> recomp` : ne pas modifier.\n\
+            "// Code généré par `ladysia-recomp <rom> recomp` : ne pas modifier.\n\
              #![allow(clippy::all, unused)]\nuse crate::gba::bus::Bus;\nuse crate::gba::cpu::Cpu;\n\n",
         );
         for b in chunk {
@@ -329,7 +329,7 @@ pub fn run(rom: &[u8], listing: &str, out_dir: &str) -> Result<String, String> {
         std::fs::write(format!("{dir}/f{f}.rs"), s).map_err(|e| e.to_string())?;
     }
     let n_files = blocks.chunks(per).count();
-    let mut m = String::from("// Code généré par `ladysia-decomp <rom> recomp` : ne pas modifier.\n#![allow(clippy::all)]\n");
+    let mut m = String::from("// Code généré par `ladysia-recomp <rom> recomp` : ne pas modifier.\n#![allow(clippy::all)]\n");
     for f in 0..n_files {
         writeln!(m, "mod f{f};").unwrap();
     }

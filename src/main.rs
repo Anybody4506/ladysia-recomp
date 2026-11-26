@@ -1,7 +1,7 @@
 //! Décompilation de Lady Sia : analyse de la ROM et extraction des ressources.
 #![cfg_attr(feature = "embarque", windows_subsystem = "windows")]
 #![cfg_attr(feature = "embarque", allow(dead_code, unused_imports))]
-//! Usage : ladysia-decomp <chemin.gba> [play | extract | music | view]
+//! Usage : ladysia-recomp <chemin.gba> [play | extract | music | view]
 
 mod analysis;
 mod arm;
@@ -49,7 +49,7 @@ fn main() {
 /// Outils de développement : analyse de la ROM, extraction, recompilation, jeu sur fichier.
 #[cfg(not(feature = "embarque"))]
 fn outils() {
-    let path = std::env::args().nth(1).expect("usage : ladysia-decomp <rom.gba>");
+    let path = std::env::args().nth(1).expect("usage : ladysia-recomp <rom.gba>");
     let rom = Rom::load(&path).expect("impossible de lire la ROM");
     if std::env::args().nth(2).as_deref() == Some("extract") {
         print!("{}", extract::run(&rom).expect("extraction"));
@@ -83,7 +83,7 @@ fn outils() {
     }
     if std::env::args().nth(2).as_deref() == Some("donnees") {
         // données du jeu sans code machine (version finale) : <rom> donnees <sortie>
-        let out = std::env::args().nth(3).expect("usage : ladysia-decomp <rom.gba> donnees <sortie>");
+        let out = std::env::args().nth(3).expect("usage : ladysia-recomp <rom.gba> donnees <sortie>");
         match recomp_gen::data_blob(&rom.data, "asm/ladysia.s") {
             Ok(d) => {
                 let zeros = rom.data.iter().zip(&d).filter(|(a, b)| a != b).count();
@@ -120,7 +120,7 @@ fn outils() {
         return;
     }
     if std::env::args().nth(2).as_deref() == Some("unpack") {
-        // ladysia-decomp <rom> unpack <adresse hex> <sortie>
+        // ladysia-recomp <rom> unpack <adresse hex> <sortie>
         let a = u32::from_str_radix(&std::env::args().nth(3).expect("adresse"), 16).expect("hex");
         let t = packed::Tables::from_rom(&rom);
         let u = packed::decompress(&t, &rom.data[(a - 0x0800_0000) as usize..]).expect("décodage");

@@ -7,7 +7,7 @@ fn main() {
     let module = dir.join("mod.rs");
     if !module.exists() {
         std::fs::create_dir_all(dir).expect("création de src/recomp/code");
-        let vide = "// Module vide écrit par build.rs : lancer `ladysia-decomp <rom.gba> recomp` pour le générer.\n\
+        let vide = "// Module vide écrit par build.rs : lancer `ladysia-recomp <rom.gba> recomp` pour le générer.\n\
                     pub const CODE_HASH: u64 = 0;\n\
                     pub const DATA_HASH: u64 = 0;\n\
                     pub static COPIES: [(u32, u32, u32, u64); 0] = [];\n\
