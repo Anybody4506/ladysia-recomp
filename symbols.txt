@@ -1,0 +1,47 @@
+# Symboles de Lady Sia (GBA, Europe) — identifiés à la main.
+# Format : adresse nom   (adresse + 1 = fonction Thumb, sinon ARM)
+#          table adresse nombre préfixe   (table de pointeurs de fonctions)
+# Le "?" final signale une hypothèse à confirmer.
+
+# --- Démarrage et interruptions (SDK Nintendo standard) ---
+080000C0 crt0_Start
+0800012C IntrMain                 # copié en IWRAM à 0x030009C0 par InitIntrTable
+08000309 AgbMain
+0802DEA1 InitIntrTable            # copie IntrHandlerTable -> IntrTable (0x03000910)
+table 0835182C 15 IntrHandler     # 0 = VBlank, 4 = Timer1, le reste = handler vide
+
+# --- Boucle de jeu et entrées ---
+08001499 GameLoop_A?              # lit REG_KEYINPUT, attend la VBlank (Halt)
+08001575 GameLoop_B?              # lit REG_KEYINPUT
+080019BD ReadKeys?                # lit REG_KEYINPUT -> gKeys (0x0300094C)
+
+# --- Texte multilingue ---
+0800725D GetText                  # (id) -> texte dans la langue gLanguage (0x03001B54, 0..5)
+0800704D Menu_Open?               # reçoit une table de pointeurs (0x08351xxx), écran 240x160
+
+# --- Objets / sprites ---
+0802A6ED Entity_Alloc?            # cherche un emplacement libre (64 x 0x78 octets)
+0802C5ED Sprite_SetAnimation?     # (obj, n°) : 515 appelants
+0802C555 Sprite_IsAnimFinished?   # dernière image atteinte ?
+08035809 _call_via_r1             # trampoline GCC : bx r1
+
+# --- Décompression (format maison, voir NOTES.md) ---
+0802EF4D ReadU32Unaligned
+0802F07D Decomp_Init              # copie Decomp_Core en IWRAM (0x03006CD0) par DMA
+0802F0B1 Decompress               # (dest, src) : lit la taille puis appelle Decomp_Entry
+08037B35 Decomp_Entry_veneer      # bx pc -> ARM
+08000248 Decomp_Entry             # ARM : lit la méthode, copie brute si 0
+08000290 Decomp_Core              # ARM, exécuté depuis l'IWRAM
+08037B2D EnableIrq_veneer
+08037B29 EnableIrq
+08037B31 DisableIrq
+0802ADE9 Sprite_CollidePixel?     # collision au pixel près entre 2 sprites (retournements gérés)
+
+# --- Bloc compressé 0x08260000 (LZ + Huffman maison, voir NOTES.md) ---
+0802EE7D LoadPacked               # (dest, src) : tailles -> EWRAM, dest mis à 0, puis décodage
+0802E071 Packed_Decode            # boucle principale : littéraux / (longueur, distance)
+0802E6E1 Packed_BuildTables       # en-tête de bloc : longueurs (en différence) -> arbres
+0802EA2D Packed_BuildHuffman      # (longueurs, table, n) : Huffman canonique
+0802EB25 Packed_ReadSymbol        # lit un symbole avec un arbre
+0802EC41 Packed_Predict           # prédicteur audio adaptatif (mode son)
+0802EF65 Packed_Finish            # lit un éventuel symbole de fin

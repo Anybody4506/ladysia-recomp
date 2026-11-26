@@ -1,0 +1,28 @@
+# Tout ce qui vient de la cartouche est généré et ne doit jamais être publié.
+# Voir README.md pour le recréer à partir de sa propre ROM.
+
+# ROM, données du jeu, sauvegardes
+*.gba
+*.dat
+*.lsd
+*.sav
+*.etat*
+*.reprise
+
+# désassemblage, code recompilé, extractions, rapports d'analyse
+/asm/
+/src/recomp/code/
+/extract/
+/fonctions.txt
+/rapport.txt
+/lz77.txt
+/err.txt
+
+# exécutables construits
+/jeu/
+/visionneuse/
+/target/
+*.exe
+
+# réglages locaux
+/.cargo/

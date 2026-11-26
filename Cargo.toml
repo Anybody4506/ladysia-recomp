@@ -1,0 +1,16 @@
+[package]
+name = "ladysia-decomp"
+version = "0.1.0"
+edition = "2024"
+
+[features]
+# Version finale : données sans code machine intégrées à l'exécutable. D'abord `ladysia-decomp <rom.gba> donnees <fichier>`, puis LADYSIA_DONNEES=<fichier> cargo build --release --features embarque
+embarque = []
+
+[dependencies]
+
+# Exécutable plus léger : pas de tables de déroulement ni de symboles. (`opt-level = "s"`
+# ne réduit pas le code recompilé et triple le temps de compilation.)
+[profile.release]
+panic = "abort"
+strip = true
